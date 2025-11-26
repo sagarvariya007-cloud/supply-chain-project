@@ -1,0 +1,56 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Supply Chain Demand Predictor</title>
+</head>
+
+<body>
+    <h2>Supply Chain Demand Predictor</h2>
+
+    <form id="form">
+        Date: <input id="Date" value="2025-11-27"><br> Product: <input id="Product" value="P001"><br> Region: <input id="Region" value="North"><br> Price: <input id="Price" value="100"><br> Promo: <input id="Promo" value="0"><br> Inventory: <input id="Inventory"
+            value="200"><br> lag_1: <input id="lag_1" value="80"><br> lag_7: <input id="lag_7" value="75"><br> MA_7: <input id="MA_7" value="78"><br>
+        <button type="submit">Predict</button>
+    </form>
+
+    <pre id="output"></pre>
+
+    <script>
+        document.getElementById("form").addEventListener("submit", async function(e) {
+            e.preventDefault();
+
+            const payload = {
+                Date: document.getElementById('Date').value,
+                Product: document.getElementById('Product').value,
+                Region: document.getElementById('Region').value,
+                Price: parseFloat(document.getElementById('Price').value),
+                Promo: parseInt(document.getElementById('Promo').value),
+                Inventory: parseInt(document.getElementById('Inventory').value),
+                lag_1: parseFloat(document.getElementById('lag_1').value),
+                lag_7: parseFloat(document.getElementById('lag_7').value),
+                MA_7: parseFloat(document.getElementById('MA_7').value)
+            };
+
+            try {
+                const res = await fetch("http://10.194.145.97:5000/predict", { // 🔥 YOUR SERVER IP
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                const data = await res.json();
+                document.getElementById("output").innerText = JSON.stringify(data, null, 2);
+
+            } catch (err) {
+                document.getElementById("output").innerText = "Error: " + err;
+            }
+        });
+    </script>
+
+</body>
+
+</html>
